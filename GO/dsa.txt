@@ -1,0 +1,183 @@
+package main
+
+import (
+	"fmt"
+)
+
+type Step struct {
+	Dir rune
+	Dr  int
+	Dc  int
+}
+
+func removeDuplicates(result []string) []string {
+	set := make(map[string]int)
+	var unique []string
+
+	for _, item := range result {
+		if _, exists := set[item]; !exists {
+			set[item] = 1
+			unique = append(unique, item)
+		} else {
+			set[item]++
+		}
+	}
+	return unique
+}
+
+func ratinmaze(maze [][]int) string {
+	n := len(maze)
+	result := []string{}
+
+	direction := []Step{
+		{'d', 1, 0},
+		{'u', -1, 0},
+		{'r', 0, 1},
+		{'l', 0, -1},
+	}
+
+	var backtrack func(r int, c int, currentPath string)
+
+	backtrack = func(r int, c int, currentPath string) {
+		if r == n-1 && c == n-1 {
+			result = append(result, currentPath)
+			return
+		}
+
+		maze[r][c] = 0
+
+		for _, dir := range direction {
+			nr := dir.Dr + r
+			nc := dir.Dc + c
+
+			if nr >= 0 && nr < n && nc >= 0 && nc < n && maze[nr][nc] == 1 {
+				backtrack(nr, nc, currentPath+string(dir.Dir))
+			}
+		}
+
+		maze[r][c] = 1
+	}
+
+	backtrack(0, 0, "")
+	return result[0]
+}
+
+func findWordFromBoard(board [][]string, word string) bool {
+	rows := len(board)
+	cols := len(board[0])
+
+	set := make(map[string]struct{})
+
+	var dfs func(r int, c int, i int) bool
+
+	dfs = func(r int, c int, i int) bool {
+		if i == len(word) {
+			return true
+		}
+
+		if r < 0 || r >= rows || c < 0 || c >= cols {
+			return false
+		}
+
+		key := fmt.Sprintf("%d,%d", r, c)
+
+		if _, ok := set[key]; ok {
+			return false
+		}
+
+		if board[r][c] != string(word[i]) {
+			return false
+		}
+
+		set[key] = struct{}{}
+
+		found := dfs(r+1, c, i+1) ||
+			dfs(r-1, c, i+1) ||
+			dfs(r, c+1, i+1) ||
+			dfs(r, c-1, i+1)
+
+		delete(set, key)
+		return found
+	}
+
+	for r := 0; r < rows; r++ {
+		for c := 0; c < cols; c++ {
+			if dfs(r, c, 0) {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func findMaxCubes(input [][]int) int {
+	memo := make(map[string]int)
+	var maxSqures int = 0
+
+	for r := 0; r < len(input); r++ {
+		for c := 0; c < len(input[r]); c++ {
+			currentCube := _findMaxCubes(input, r, c, memo)
+			maxSqures = max(maxSqures, currentCube)
+		}
+	}
+	return maxSqures
+}
+
+func _findMaxCubes(input [][]int, r int, c int, memo map[string]int) int {
+	if r >= len(input) || c >= len(input[r]) {
+		return 0
+	}
+
+	key := fmt.Sprintf("%d,%d", r, c)
+
+	if value, ok := memo[key]; ok {
+		return value
+	}
+
+	if input[r][c] == 0 {
+		memo[key] = 0
+		return 0
+	}
+
+	down := _findMaxCubes(input, r+1, c, memo)
+	right := _findMaxCubes(input, r, c+1, memo)
+	diagonal := _findMaxCubes(input, r+1, c+1, memo)
+
+	maxSide := 1 + min(down, diagonal, right)
+	memo[key] = maxSide
+	return memo[key]
+}
+
+func main() {
+
+	maze := [][]int{
+		{1, 0, 1, 1, 1, 1, 0, 1, 1, 1},
+		{1, 1, 1, 0, 0, 1, 1, 1, 0, 1},
+		{0, 0, 1, 1, 0, 0, 1, 0, 1, 1},
+		{1, 1, 0, 1, 1, 1, 1, 1, 1, 0},
+		{1, 0, 1, 1, 0, 1, 0, 0, 1, 1},
+		{1, 1, 1, 0, 1, 1, 1, 0, 0, 1},
+		{0, 0, 1, 1, 1, 0, 1, 1, 1, 1},
+		{1, 1, 1, 0, 0, 1, 0, 0, 0, 1},
+		{1, 0, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 0, 0, 0, 1, 0, 1, 1},
+	}
+	fmt.Println(ratinmaze(maze))
+	result := []string{"ddr", "rrd", "ddr", "lld", "rrd"}
+	uniqueResult := removeDuplicates(result)
+	fmt.Println(uniqueResult)
+	board := [][]string{
+		{"A", "B", "C", "E"},
+		{"S", "F", "C", "S"},
+		{"A", "D", "E", "E"},
+	}
+	fmt.Println(findWordFromBoard(board, "ABCCED"))
+	cubes := [][]int{
+		{1, 0, 1, 0, 0},
+		{1, 0, 1, 1, 1},
+		{1, 1, 1, 1, 1},
+		{1, 0, 1, 1, 1},
+	}
+	fmt.Println(findMaxCubes(cubes))
+}

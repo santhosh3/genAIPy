@@ -1,0 +1,461 @@
+int32 = rune
+int8 = byte
+
+uint8 = 0 - 2 POW 8 
+uint16 = 0 - 2 POW 16 
+uint32 = 0 - 2 POW 32
+
+int8 = -2 POW 7 to 2 POW 8
+int16 = -2 POW 15 to 2 POW 16
+
+string
+nil
+bool
+int
+uint
+rune
+float32
+float64
+
+var, const same as JS
+
+var s string = "HELLO"
+fmt.Println(s)  it is same like console.log() in javaScript
+
+y := 20
+fmt.Println("%T", y)  print type of element y
+
+// typeCasting //
+
+num := -10
+num1 := uint(num)
+
+%T stands for Type of variable
+%v stands for value of variable
+%b stands for binary of value for intergers
+%f float of the value
+
+fmt.Println("%b", y)
+fmt.Println("%0.2f", y)
+
+a := fmt.Sprintf("%v\n", num)
+
+import (
+    "fmt"
+    "math"
+    "strconv"
+)
+
+math.Pow(), Sqrt(), Min, Max, Round, Ceil, Floor, 
+
+x := "345"
+y, err := strconv.Atoi(x).  //like ParseInt()
+fmt.Println(y,err)
+
+x := 2
+
+if x < 3 {
+    fmt.Println("run")
+} else if x > 4 {
+    fmt.Println("starting")
+} else {
+    fmt.Println("Done")
+}
+
+a := 100
+
+switch {
+case a <= 3: 
+     fmt.Println("One")
+     fallthrough            => if the above case is true then it wont stop it will check for next case as well
+case a > 3:
+     fmt.Println("Two")
+default:
+     fmt.Println("None")
+}
+
+
+// Loops
+
+for idx := 1; idx <= 100; idx++ {
+    fmt.Println(idx)
+}
+
+no while loop in go instead we can do like this
+
+for true {
+    fmt.Println("Hello World")
+}
+
+for x < 100 {
+    fmt.Println(x)
+    x++;
+}
+
+fmt.Println, fmt.Printf // both are different because in Printf we can't use things like %f, %t, %v like things
+
+s := "Hello World"
+
+	for idx := 0; idx <= len(s); idx++ {
+		fmt.Println(string(s[idx]))
+	}
+
+    for _, item := range s {
+        fmt.Printf("%c", item)
+    }
+
+// Arrays
+
+var arr [2]bool
+fmt.Println(arr)
+
+arr := [2]int{1, 4}
+arr := [2][2]int{{1,2},{3,4}}
+fmt.Println(arr)
+
+
+arr := [...][2]int{{3,4},{5,6},{7,8},{9,1}}
+arr[0] = [2]int{11,12}
+
+fmt.Println(arr)
+fmt.Println(len(arr))
+
+arr := [...][2]int{{3,4},{5,6},{7,8},{9,1}}
+
+    for _, nested := range arr {
+        for _, value := range nested {
+            fmt.Println(value)
+        }
+    }
+
+
+func main() {
+    arr := [...][2]int{{4,5},{8,9},{10,11}}
+    test(arr)
+    fmt.Println(arr). // but it wont work like other languages required reference to modify.
+}
+
+func test(arr [3][2]int) {
+    arr[0] = [2]int{10,30}
+}
+
+// slices
+
+func main() {
+    arr := [5]int{1,2,3,4,5}
+    s1 := arr[:3]. // 1,2,3
+    s2 := arr[1:3] // 2,3
+    s3 := arr[3:]  // 4,5
+
+
+    // Pointer
+    // length
+    // Capacity
+
+    arr := [6]int{1,2,3,4,5,6} 
+    s1 := arr[:3]
+    fmt.Println(s1, len(s1), cap(s1)). // [1,2,3], 3, 6
+
+    we can make decision based on capacity as well
+
+    arr := [6]int{1,2,3,4,5,6}
+    s1 := arr[1:3]
+    s1 := s1[:4]
+    fmt.Println(s1, len(s1), cap(s1))
+}
+
+// Append slice
+
+func main() {
+    s1 := []string{"a", "b"}
+
+    for i := 1; i <= 10; i++ {
+        s1 = append(s1, "tom")
+        fmt.Println(s1, len(s1), cap(s1)) // every time if capacity exceeds it will double the capacity for example. intial 2, 4, 8, 16
+    }
+
+    fmt.Println(s1)
+}
+
+// one more way can we do this 
+
+make(int[], 10, 20). 10 represent length and 20 refers to capacity
+
+// if we do like this we are passing ref to test so it will mutates
+func main() {
+    s1 := []string{"a", "b"}.  // this is the slice
+    test(s1)
+    fmt.Println(s1)
+}
+
+func test(s []string) {
+    s[0] = "Change this"
+}
+
+// this is normal Array so can't mutates the value
+func main() {
+    s1 := [...]string{"a", "b"}
+    test(s1)
+    fmt.Println(s1)
+}
+
+func test(s [2]string) {
+    s[0] = "Change this"
+}
+
+// Maps in golang
+
+func main() {
+    var mp map[string]int = map[string]int{"a" : 4, "b" : 5}
+    // mp = map[string]int{"b" : 45, "n" : 34}
+    mp = map[string][]int{"a":{1,4,6},"b":{2,3,5}}
+    mp["c"] = []int{8,9,10}
+    delete(mp, "c")
+    value, ok := mp["c"]. // value is related to specific key and ok rep true or false.
+    fmt.Println(mp)
+}
+
+func main() {
+	mp := map[uint]uint{}
+	size := uint(100)
+
+	for i := uint(1); i <= size; i++ {
+		for j := uint(1); j <= 5; j++ {
+			if i%j == 0 {
+				mp[j]++
+			}
+		}
+	}
+
+	fmt.Println(mp)
+}
+
+func main() {
+	mp := map[uint]uint{}
+	size := uint(100)
+
+	for i := uint(1); i <= size; i++ {
+		for j := uint(1); j <= 5; j++ {
+			_, ok := mp[j]
+			if ok && i%j == 0 {
+				mp[j]++
+			} else if i%j == 0 {
+				mp[j] = 1
+			}
+		}
+	}
+	fmt.Println(mp)
+}
+
+// function calling 
+
+func double(num int) int {
+    return 2 * int;
+}
+
+func tipple(num int) int {
+    return 3 * int
+}
+
+func callableFunc(callable func(int) int) int {
+    return callable(20)
+}
+
+func main() {
+    value := callableFunc(tipple);
+    fmt.Println(value);
+
+    addNumber := callableFunc(func(num int) int {
+        num + 1
+    })
+    fmt.Println(addNumber);
+}
+
+func getFunc(str1 string) func(string) string {
+    return func(str2 string) string {
+        return str1 + str2;
+    }
+}
+
+func main() {
+    f1 := getFunc("Hello")
+    f2 := f1("World")
+    return f2;
+}
+
+// func sum take variadic like thing
+
+
+func sum(nums ...int) {
+    s := 0
+    for _, num := range nums {
+        s = s + num
+    }
+}
+
+sum(1,2,4,4,510,89)
+sum([]int{1,2,3,4,5,6,7,8,9,10}...)
+
+func sum(nums ...int) (res int, double int) {
+	for _, val := range nums {
+		res = res + val
+		double = double + val + val
+	}
+	return
+}
+
+func main() {
+	nums := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	res, _ := sum(nums...)
+	fmt.Println(res)
+}
+
+//// structs
+
+package main
+
+import "fmt"
+
+type Person struct {
+	name string
+	age  int
+}
+
+func getName(person Person) string {
+	return person.name
+}
+
+func (p Person) getName() string {
+	return p.name
+}
+
+func main() {
+	person := Person{name: "santhosh", age: 27}
+	persons := []Person{
+		{"santhosh", 27},
+		{"harini", 26},
+	}
+	fmt.Println(person, persons)
+	fmt.Println(getName(person))
+	fmt.Println(person.getName())
+}
+
+package main
+
+import "fmt"
+
+type Person struct {
+	name string
+	age  int
+}
+
+func (p Person) getName() string {
+	return p.name
+}
+
+func (p *Person) setName(name string) {
+	p.name = name
+}
+
+func main() {
+	person1 := Person{
+		name: "santhosh", age: 23,
+	}
+	person1.setName("sumanth")
+	fmt.Println(person1.getName())
+}
+
+
+// structs
+package main
+
+import "fmt"
+
+type Sport struct {
+	name string
+}
+
+type Hobbies struct {
+	name string
+}
+
+type Person struct {
+	name    string
+	age     int
+	sport   Sport
+	hobbies []Hobbies
+	lokis   []string 
+}
+
+func main() {
+	// FIX: Changed []lokis to []string
+	p1 := Person{
+		"k",
+		34,
+		Sport{"cre"},
+		[]Hobbies{{"playing"}, {"reading"}},
+		[]string{"loki1", "loki2"},
+	}
+
+	fmt.Println(p1)
+	// Output: {k 34 {cre} [{playing} {reading}] [loki1 loki2]}
+}
+
+
+// Interfaces
+
+package main
+
+import (
+	"fmt"
+)
+
+type Shape interface {
+	getParameter() uint
+}
+
+type Triangle struct {
+	a uint
+	b uint
+	c uint
+}
+
+type Square struct {
+	a uint
+}
+
+func (t Triangle) getParameter() uint {
+	return t.a + t.b + t.c
+}
+
+func (t Square) getParameter() uint {
+	return 4 * t.a
+}
+
+func isEventParameter(shape Shape) bool {
+	return shape.getParameter()%2 == 0
+}
+
+func main() {
+	var tria Shape = Triangle{3, 4, 5}
+	fmt.Println(tria.getParameter())
+
+	var totalPerimenterValues []Shape = []Shape{
+		Triangle{1, 2, 3},
+		Square{5},
+	}
+
+	total := uint(0)
+
+	for _, shape := range totalPerimenterValues {
+		if isEventParameter(shape) {
+			total += shape.getParameter()
+		}
+	}
+
+	fmt.Println(total)
+
+}
+
+
+// 
